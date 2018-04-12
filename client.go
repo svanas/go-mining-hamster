@@ -12,9 +12,8 @@ import (
 )
 
 const (
-	BaseURL    = "https://www.mininghamster.com/api/v2/"
-	DemoKey    = "288b2113-28ac-4b14-801f-f4d9cf9d87ad"
-	TimeFormat = "2006-01-02 15:04:05"
+	BaseURL = "https://www.mininghamster.com/api/v2/"
+	DemoKey = "288b2113-28ac-4b14-801f-f4d9cf9d87ad"
 )
 
 type Client struct {
@@ -29,7 +28,7 @@ func New(apiKey string) *Client {
 	}
 }
 
-func (client *Client) Get() ([]byte, error) {
+func (client *Client) Get() ([]Signal, error) {
 	var err error
 
 	// parse the mininghamster URL
@@ -75,5 +74,10 @@ func (client *Client) Get() ([]byte, error) {
 		}
 	}
 
-	return body, nil
+	var out []Signal
+	if err = json.Unmarshal(body, &out); err != nil {
+		return nil, err
+	}
+
+	return out, nil
 }
