@@ -4,6 +4,8 @@ import (
 	"crypto/hmac"
 	"crypto/sha512"
 	"encoding/hex"
+	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -61,6 +63,16 @@ func (client *Client) Get() ([]byte, error) {
 	var body []byte
 	if body, err = ioutil.ReadAll(resp.Body); err != nil {
 		return nil, err
+	}
+
+	// is this an error?
+	var raw []map[string]string
+	if err = json.Unmarshal(body, &raw); err == nil {
+		if len(raw) > 0 {
+			if msg, ok := raw[0]["message"]; ok {
+				return nil, errors.New(msg)
+			}
+		}
 	}
 
 	return body, nil
