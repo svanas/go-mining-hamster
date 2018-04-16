@@ -2,6 +2,7 @@ package mininghamster
 
 import (
 	"encoding/json"
+	"strings"
 	"time"
 )
 
@@ -12,6 +13,14 @@ type Signal struct {
 	Exchange   string    `json:"exchange"`
 	BaseVolume float64   `json:"basevolume"`
 	Time       time.Time `json:"time"`
+}
+
+func (s *Signal) BaseCurrency() string {
+	return strings.Split(s.Market, "-")[1]
+}
+
+func (s *Signal) QuoteCurrency() string {
+	return strings.Split(s.Market, "-")[0]
 }
 
 func (s *Signal) UnmarshalJSON(data []byte) error {
