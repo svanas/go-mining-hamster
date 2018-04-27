@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 )
@@ -29,7 +28,7 @@ func New(apiKey string) *Client {
 	}
 }
 
-func (client *Client) Get(debug bool) ([]Signal, error) {
+func (client *Client) Get() (Signals, error) {
 	var err error
 
 	// parse the mininghamster URL
@@ -65,10 +64,6 @@ func (client *Client) Get(debug bool) ([]Signal, error) {
 		return nil, err
 	}
 
-	if debug {
-		log.Printf("[DEBUG] %s", string(body))
-	}
-
 	// is this an error?
 	var raw []map[string]string
 	if err = json.Unmarshal(body, &raw); err == nil {
@@ -79,7 +74,7 @@ func (client *Client) Get(debug bool) ([]Signal, error) {
 		}
 	}
 
-	var out []Signal
+	var out Signals
 	if len(body) > 0 { // fix: unexpected end of JSON input.
 		if err = json.Unmarshal(body, &out); err != nil {
 			return nil, err
