@@ -35,7 +35,11 @@ func (self *Signal) UnmarshalJSON(data []byte) error {
 	if err = json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
-	if self.Time, err = time.Parse("2006-01-02 15:04:05", aux.Time); err != nil {
+	var loc *time.Location
+	if loc, err = time.LoadLocation("Europe/Vienna"); err != nil {
+		return err
+	}
+	if self.Time, err = time.ParseInLocation("2006-01-02 15:04:05", aux.Time, loc); err != nil {
 		return err
 	}
 	return nil
