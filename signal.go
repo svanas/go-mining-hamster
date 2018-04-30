@@ -51,7 +51,7 @@ type (
 
 func (self Signals) IndexOf(signal *Signal) int {
 	for i, s := range self {
-		if s == *signal {
+		if (s.Market == signal.Market) && (s.LastPrice == signal.LastPrice) && (s.Exchange == signal.Exchange) {
 			return i
 		}
 	}
