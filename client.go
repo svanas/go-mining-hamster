@@ -64,7 +64,17 @@ func (client *Client) Get() (Signals, error) {
 		return nil, err
 	}
 
-	// is this an error?
+	// [fix] invalid character '<' looking for beginning of value
+	if resp.StatusCode >= http.StatusBadRequest {
+		var txt string
+		txt = http.StatusText(resp.StatusCode)
+		if txt == "" {
+			txt = string(body)
+		}
+		return nil, errors.New(txt)
+	}
+
+	// is this a MiningHamster error?
 	var raw []map[string]string
 	if err = json.Unmarshal(body, &raw); err == nil {
 		if len(raw) > 0 {
@@ -75,7 +85,7 @@ func (client *Client) Get() (Signals, error) {
 	}
 
 	var out Signals
-	if len(body) > 0 { // fix: unexpected end of JSON input.
+	if len(body) > 0 { // [fix] unexpected end of JSON input.
 		if err = json.Unmarshal(body, &out); err != nil {
 			return nil, err
 		}
