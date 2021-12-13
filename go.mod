@@ -1,3 +1,3 @@
-module go-mining-hamster
+module github.com/svanas/go-mining-hamster
 
 go 1.16
